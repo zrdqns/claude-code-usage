@@ -1,6 +1,6 @@
 {
-  "name": "claude-code-consumo",
-  "description": "Tablero lateral para Claude Code: tiempo y costo de la sesión, límites, contexto, tokens y herramientas",
+  "name": "claude-code-usage",
+  "description": "Side pane for Claude Code: session time and cost, rate limits, context, tokens and tools",
   "owner": { "name": "zrdqns" },
-  "plugins": [{ "name": "consumo", "source": "./" }]
+  "plugins": [{ "name": "usage", "source": "./" }]
 }

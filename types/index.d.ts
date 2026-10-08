@@ -13,7 +13,7 @@ export type LastTurn = { output: number }
 
 declare module 'claude-code' {
   interface PluginState {
-    consumo: {
+    usage: {
       tokens: Tokens
       tools: Tools
       parts: Part[]

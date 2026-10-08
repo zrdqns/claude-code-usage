@@ -1,78 +1,78 @@
-# consumo
+# usage
 
-Mod para [Claude Code](https://claude.com/claude-code): un tablero lateral con lo que la sesión lleva gastado.
+A mod for [Claude Code](https://claude.com/claude-code): a side pane with what the session has spent so far.
 
 ```
 12 min 5 s
-de sesión · $3.51
+this session · $3.51
 
-Límite de 5 horas
-reinicia en              4 h 0 min
+5-hour limit
+resets in                4 h 0 min
 
-Límite de 7 días               79%
+7-day limit                    79%
 ━━━━━━━━━━━━━━━━━━━━━━━━━──────
-reinicia en               3 d 2 h
+resets in                  3 d 2 h
 
-Contexto                180k de 1M
-mensajes                      142k
-herramientas                   21k
-sistema                        12k
+Context                 180k of 1M
+messages                      142k
+tools                          21k
+system                         12k
 
-Último turno
-salida                        1.2k
+Last turn
+output                        1.2k
 
 Tokens                         45k
-salida                         12k
-entrada                        33k
-servido de caché               92%
+output                         12k
+input                          33k
+served from cache              92%
 
-Herramientas                    18
+Tools                           18
 Read                             7
 Edit                             5
 Bash                             4
 ```
 
-## Qué muestra
+## What it shows
 
-- **Sesión**: tiempo transcurrido y costo acumulado.
-- **Avisos**: desde el 80 % de contexto recomienda `/compact`, y avisa de cada límite que pase del 80 % (el de 5 horas se sigue en la franja).
-- **Límites**: cada ventana de uso con su barra y cuándo reinicia.
-- **Contexto**: tokens usados sobre la ventana y las tres categorías que más ocupan.
-- **Último turno**: tokens de salida.
-- **Tokens**: salida, entrada y qué parte de la entrada sirvió la caché.
-- **Herramientas**: llamadas totales y las cinco más usadas.
+- **Session**: elapsed time and accumulated cost.
+- **Notices**: from 80% of context it recommends `/compact`, and it warns about each limit that passes 80% (the 5-hour one is followed on the band).
+- **Limits**: each usage window with its bar and when it resets.
+- **Context**: tokens used out of the window and the three categories that take up the most.
+- **Last turn**: output tokens.
+- **Tokens**: output, input and how much of the input the cache served.
+- **Tools**: total calls and the five most used.
 
-El panel se abre solo al empezar la sesión; `/consumo` lo vuelve a abrir.
+The pane opens by itself when the session starts; `/usage-pane` opens it again.
 
-## Pensado para usarse con `franja`
+## Meant to be used with `band`
 
-Este panel no repite lo que ya muestra la franja sobre el prompt del mod [franja](https://github.com/zrdqns/claude-code-franja): el porcentaje de contexto, el porcentaje del límite de 5 horas y la duración y el costo del último turno están allí. Aquí queda el detalle que la franja no tiene.
+This pane does not repeat what the [band](https://github.com/zrdqns/claude-code-band) mod already shows above the prompt: the context percentage, the 5-hour limit percentage and the last turn's length and cost are there. Here is the detail the band does not have.
 
-## Instalación
+## Installation
 
-En el prompt de una sesión de terminal:
+At the prompt of a terminal session:
 
 ```
-/plugin install consumo --marketplace zrdqns/claude-code-consumo
+/plugin install usage --marketplace zrdqns/claude-code-usage
 ```
 
-Responde `y` para añadir el marketplace y elige el alcance (el de usuario lo carga en todas las sesiones, también en las de la app de escritorio).
+Answer `y` to add the marketplace and choose the scope (the user scope loads it in every session, including the desktop app's).
 
-Para probarlo desde una copia local, sin instalarlo:
+To try it from a local copy, without installing it:
 
 ```bash
-claude --plugin-dir ./claude-code-consumo
+claude --plugin-dir ./claude-code-usage
 ```
 
-## Desarrollo
+## Development
 
 ```bash
 claude plugin validate .
 claude plugin test .
 ```
 
-El módulo está en [`hooks/register.tsx`](hooks/register.tsx), su contrato de estado en [`types/index.d.ts`](types/index.d.ts) y los tests en [`tests/`](tests).
+The module is in [`hooks/register.tsx`](hooks/register.tsx), its state contract in [`types/index.d.ts`](types/index.d.ts) and the tests in [`tests/`](tests).
 
-## Licencia
+## License
 
 [MIT](LICENSE)

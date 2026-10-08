@@ -1,38 +1,38 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-const PANE = 'consumo'
-const TITLE = 'Consumo'
+const PANE = 'usage'
+const TITLE = 'Usage'
 
-const tokens = atom({ plugin: 'consumo', key: 'tokens' } as const, {
+const tokens = atom({ plugin: 'usage', key: 'tokens' } as const, {
   input: 0,
   output: 0,
   cacheRead: 0,
   cacheWrite: 0,
 })
-const tools = atom({ plugin: 'consumo', key: 'tools' } as const, {})
-const parts = atom({ plugin: 'consumo', key: 'parts' } as const, [])
-const last = atom({ plugin: 'consumo', key: 'last' } as const, null)
-// The conversor mod's last notice, when it is loaded.
-const converted = { plugin: 'conversor', key: 'notice' } as const
+const tools = atom({ plugin: 'usage', key: 'tools' } as const, {})
+const parts = atom({ plugin: 'usage', key: 'parts' } as const, [])
+const last = atom({ plugin: 'usage', key: 'last' } as const, null)
+// The converter mod's last notice, when it is loaded.
+const converted = { plugin: 'converter', key: 'notice' } as const
 // From this share of the context window or of a rate limit, the pane says so.
 const ALERT_PERCENT = 80
 // How long another mod's notice stays in the pane.
 const NOTICE_MS = 60000
 
 const LIMITS: Record<string, string> = {
-  five_hour: '5 horas',
-  seven_day: '7 días',
-  spend_limit: 'gasto',
+  five_hour: '5-hour',
+  seven_day: '7-day',
+  spend_limit: 'Spend',
 }
 
 const PARTS: Record<string, string> = {
-  'System prompt': 'sistema',
-  'System tools': 'herramientas',
-  'MCP tools': 'herramientas MCP',
-  'Custom agents': 'agentes',
-  'Memory files': 'memoria',
-  Messages: 'mensajes',
+  'System prompt': 'system',
+  'System tools': 'tools',
+  'MCP tools': 'MCP tools',
+  'Custom agents': 'agents',
+  'Memory files': 'memory',
+  Messages: 'messages',
 }
 
 // The desktop draws the meter as an image, outside the theme: these read on
@@ -98,8 +98,8 @@ const refresh = async ($: EngineInterface) => {
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
-      name: 'consumo',
-      description: 'Abre el tablero de consumo de la sesión',
+      name: 'usage-pane',
+      description: "Opens the session's usage pane",
     })
     void $.ui.open({ id: PANE, title: TITLE })
     $.clock.every(1000, () => $.ui.invalidate('ui.render'))
@@ -109,10 +109,10 @@ export const register: Register = on => {
     return next(e)
   })
 
-  on('command.run', { command: 'consumo' }, async $ => {
+  on('command.run', { command: 'usage-pane' }, async $ => {
     await $.ui.open({ id: PANE, title: TITLE })
 
-    return { text: 'Tablero de consumo abierto.' }
+    return { text: 'Usage pane opened.' }
   })
 
   on('tool.call', async ($, e, next) => {
@@ -161,13 +161,13 @@ export const register: Register = on => {
     const incoming = fresh + spent.cacheRead
     const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1])
     const calls = ranked.reduce((sum, [, count]) => sum + count, 0)
-    // The franja mod's band has the context's figure and the five-hour one:
+    // The band mod has the context's figure and the five-hour one:
     // the pane keeps the advice, and the limits the band does not show.
     const warnings = [
       ...(percent !== undefined && percent >= ALERT_PERCENT
         ? [
             {
-              text: 'Contexto alto: conviene /compact',
+              text: 'Context is high: consider /compact',
               color: tone(percent) ?? 'warning',
             },
           ]
@@ -178,7 +178,7 @@ export const register: Register = on => {
             limit.kind !== 'five_hour' && limit.percentUsed >= ALERT_PERCENT,
         )
         .map(limit => ({
-          text: `Límite de ${LIMITS[limit.kind] ?? limit.kind} al ${Math.round(limit.percentUsed)}%`,
+          text: `${LIMITS[limit.kind] ?? limit.kind} limit at ${Math.round(limit.percentUsed)}%`,
           color: tone(limit.percentUsed) ?? 'warning',
         })),
     ]
@@ -227,7 +227,7 @@ export const register: Register = on => {
       return (
         <Svg
           source={meter(value, METER[alert ?? 'calm'])}
-          alt={`${label} al ${value}%`}
+          alt={`${label} at ${value}%`}
           height={12}
         />
       )
@@ -239,14 +239,14 @@ export const register: Register = on => {
           <Text bold>{span(now - usage.startedAt)}</Text>
           <Text dimColor>
             {cost === undefined
-              ? 'de sesión'
-              : `de sesión · $${cost.usd.toFixed(2)}`}
+              ? 'this session'
+              : `this session · $${cost.usd.toFixed(2)}`}
           </Text>
         </Box>
 
         {(warnings.length > 0 || news.length > 0) && (
           <Box flexDirection="column">
-            <Text>Avisos</Text>
+            <Text>Notices</Text>
             {warnings.map(warning => (
               <Text color={warning.color}>{warning.text}</Text>
             ))}
@@ -257,13 +257,13 @@ export const register: Register = on => {
         )}
 
         {rateLimits.map(limit => {
-          const label = `Límite de ${LIMITS[limit.kind] ?? limit.kind}`
+          const label = `${LIMITS[limit.kind] ?? limit.kind} limit`
           const value = Math.round(limit.percentUsed)
           const reset =
             limit.resetsAt !== undefined &&
-            sub('reinicia en', until(Date.parse(limit.resetsAt) - now))
+            sub('resets in', until(Date.parse(limit.resetsAt) - now))
 
-          // The franja mod's band has the five-hour figure: here, only its reset.
+          // The band mod has the five-hour figure: here, only its reset.
           return limit.kind === 'five_hour' ? (
             reset && (
               <Box flexDirection="column">
@@ -283,8 +283,8 @@ export const register: Register = on => {
         {context.tokens !== undefined && (
           <Box flexDirection="column">
             {head(
-              'Contexto',
-              `${compact(context.tokens)} de ${compact(context.window)}`,
+              'Context',
+              `${compact(context.tokens)} of ${compact(context.window)}`,
             )}
             {rows.map(row =>
               sub(PARTS[row.name] ?? row.name.toLowerCase(), compact(row.tokens)),
@@ -292,32 +292,32 @@ export const register: Register = on => {
           </Box>
         )}
 
-        {/* Its length and its cost are on the franja mod's band. */}
+        {/* Its length and its cost are on the band mod's line. */}
         {turn !== null && (
           <Box flexDirection="column">
-            <Text>Último turno</Text>
-            {sub('salida', compact(turn.output))}
+            <Text>Last turn</Text>
+            {sub('output', compact(turn.output))}
           </Box>
         )}
 
         <Box flexDirection="column">
           {head('Tokens', compact(spent.output + fresh))}
-          {sub('salida', compact(spent.output))}
-          {sub('entrada', compact(fresh))}
+          {sub('output', compact(spent.output))}
+          {sub('input', compact(fresh))}
           {incoming > 0 &&
             sub(
-              'servido de caché',
+              'served from cache',
               `${Math.round((spent.cacheRead / incoming) * 100)}%`,
             )}
         </Box>
 
         <Box flexDirection="column">
-          {head('Herramientas', `${calls}`)}
+          {head('Tools', `${calls}`)}
           {ranked
             .slice(0, 5)
             .map(([tool, count]) => sub(shortName(tool), `${count}`))}
           {ranked.length > 5 && (
-            <Text dimColor>+{ranked.length - 5} más</Text>
+            <Text dimColor>+{ranked.length - 5} more</Text>
           )}
         </Box>
       </Box>

@@ -1,7 +1,7 @@
 {
-  "name": "consumo",
-  "version": "0.2.0",
-  "description": "Tablero lateral con tokens, contexto, herramientas y tiempo de la sesion",
+  "name": "usage",
+  "version": "0.3.0",
+  "description": "Side pane with the session's tokens, context, tools and time",
   "author": { "name": "Daniel" },
   "types": "./types/index.d.ts"
 }
