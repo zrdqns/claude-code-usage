@@ -6,7 +6,8 @@ A mod for [Claude Code](https://claude.com/claude-code): a side pane with what t
 12 min 5 s
 this session · $3.51
 
-5-hour limit
+5-hour limit                    9%
+━━━────────────────────────────
 resets in                4 h 0 min
 
 7-day limit                    79%
@@ -35,7 +36,7 @@ Bash                             4
 ## What it shows
 
 - **Session**: elapsed time and accumulated cost.
-- **Notices**: from 80% of context it recommends `/compact`, and it warns about each limit that passes 80% (the 5-hour one is followed on the band).
+- **Notices**: from 80% of context it recommends `/compact`, and it warns about each limit that passes 80% (the 5-hour one has its own bar, and is on the band too).
 - **Limits**: each usage window with its bar and when it resets.
 - **Context**: tokens used out of the window and the three categories that take up the most.
 - **Last turn**: output tokens.
@@ -46,7 +47,7 @@ The pane opens by itself when the session starts; `/usage-pane` opens it again.
 
 ## Meant to be used with `band`
 
-This pane does not repeat what the [band](https://github.com/zrdqns/claude-code-band) mod already shows above the prompt: the context percentage, the 5-hour limit percentage and the last turn's length and cost are there. Here is the detail the band does not have.
+This pane does not repeat what the [band](https://github.com/zrdqns/claude-code-band) mod already shows above the prompt: the context percentage and the last turn's length and cost are there. Here is the detail the band does not have.
 
 ## Installation
 

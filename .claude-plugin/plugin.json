@@ -1,6 +1,6 @@
 {
   "name": "usage",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Side pane with the session's tokens, context, tools and time",
   "author": { "name": "Daniel" },
   "types": "./types/index.d.ts"

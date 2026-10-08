@@ -162,7 +162,7 @@ export const register: Register = on => {
     const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1])
     const calls = ranked.reduce((sum, [, count]) => sum + count, 0)
     // The band mod has the context's figure and the five-hour one:
-    // the pane keeps the advice, and the limits the band does not show.
+    // the pane keeps the advice, and warns of the limits the band does not show.
     const warnings = [
       ...(percent !== undefined && percent >= ALERT_PERCENT
         ? [
@@ -259,23 +259,13 @@ export const register: Register = on => {
         {rateLimits.map(limit => {
           const label = `${LIMITS[limit.kind] ?? limit.kind} limit`
           const value = Math.round(limit.percentUsed)
-          const reset =
-            limit.resetsAt !== undefined &&
-            sub('resets in', until(Date.parse(limit.resetsAt) - now))
 
-          // The band mod has the five-hour figure: here, only its reset.
-          return limit.kind === 'five_hour' ? (
-            reset && (
-              <Box flexDirection="column">
-                <Text>{label}</Text>
-                {reset}
-              </Box>
-            )
-          ) : (
+          return (
             <Box flexDirection="column">
               {head(label, `${value}%`)}
               {gauge(label, value)}
-              {reset}
+              {limit.resetsAt !== undefined &&
+                sub('resets in', until(Date.parse(limit.resetsAt) - now))}
             </Box>
           )
         })}

@@ -57,9 +57,8 @@ for (const surface of ['terminal', 'desktop'] as const) {
     expect(texts).toContain('this session · $3.51')
     expect(texts).not.toContain('18%')
     expect(texts).toContain('180k of 1M')
-    // The band mod has the five-hour figure: the pane keeps its reset.
     expect(texts).toContain('5-hour limit')
-    expect(texts).not.toContain('9%')
+    expect(texts).toContain('9%')
     expect(texts).toContain('4 h 0 min')
     expect(texts).toContain('7-day limit')
     expect(texts).toContain('79%')
@@ -68,7 +67,7 @@ for (const surface of ['terminal', 'desktop'] as const) {
   })
 }
 
-test("warns from 80% of context or of a limit, without repeating the band's figures", async ($, on) => {
+test('warns from 80% of context or of a limit; the five-hour one only has its bar', async ($, on) => {
   world(on, 86, [
     { kind: 'five_hour', percentUsed: 82.4 },
     { kind: 'seven_day', percentUsed: 91 },
@@ -80,7 +79,8 @@ test("warns from 80% of context or of a limit, without repeating the band's figu
   expect(texts).toContain('Context is high: consider /compact')
   expect(texts).toContain('7-day limit at 91%')
   expect(texts.filter(text => /^.+ limit at \d+%$/.test(text))).toHaveLength(1)
-  expect(texts.some(text => text.includes('86%') || text.includes('82%'))).toBe(false)
+  expect(texts).toContain('82%')
+  expect(texts.some(text => text.includes('86%'))).toBe(false)
 })
 
 test('of the last turn it says the output; its length and its cost go on the band', async ($, on) => {
